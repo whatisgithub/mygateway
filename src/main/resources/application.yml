@@ -15,8 +15,10 @@ spring:
             predicates:
 #              基于query查询参数进行断言
               - Query=id
-            filters:
-              - StripPrefix=1
+        - id: httpbin3
+            uri: http://httpbin.org/
+            predicates:
+              #基于请求方法匹配查询参数进行断言
 
 server:
   port: 8080
