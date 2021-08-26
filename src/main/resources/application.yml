@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: httpbin1
+          uri: http://httpbin.org/
+          predicates:
+#基于断言或者说表达式Path匹配注意访问的时候会把/gateway给带给http://httpbin.org/，所以需要有filter把前缀给弄掉
+            - Path=/gateway/**
+          filters:
+#            去掉一级前缀就是把gateway给干掉然后丢给后端
+            - StripPrefix=1
+        - id: httpbin2
+            uri: http://httpbin.org/
+            predicates:
+#              基于query查询参数进行断言
+              - Query=id
+            filters:
+              - StripPrefix=1
+
+server:
+  port: 8080
