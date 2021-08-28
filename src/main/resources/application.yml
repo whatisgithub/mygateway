@@ -2,6 +2,12 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: httpbinLB
+#            负载均衡对应服务
+            uri: LB://serviceName
+            predicates:
+              #基于断言或者说表达式Path匹配注意访问的时候会把/gateway给带给http://httpbin.org/，所以需要有filter把前缀给弄掉
+              - Path=/gateway/**
         - id: httpbin1
           uri: http://httpbin.org/
           predicates:
@@ -18,7 +24,22 @@ spring:
         - id: httpbin3
             uri: http://httpbin.org/
             predicates:
-              #基于请求方法匹配查询参数进行断言
+              #基于Cookie进行断言 表示必须匹配到cookie name=key3
+              - Cookie=name,key3
+#     整合eureka，所以上面那些就可以删除来
+      discovery:
+        locator:
+          enabled: true
+  application:
+    name: myGateWay
 
 server:
   port: 8080
+#和eureka集成
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7002/eureka
+ServiceName:
+  ribbon:
+    NFLLoadBalancerRuleClassName: com.test.myRule
