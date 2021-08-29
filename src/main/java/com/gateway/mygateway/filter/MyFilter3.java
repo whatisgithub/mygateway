@@ -10,18 +10,18 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
-public class MyFilter implements Ordered, GlobalFilter {
+public class MyFilter3 implements Ordered, GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
         MultiValueMap<String, String> queryParams = request.getQueryParams();
 
-        System.out.println("1");
+        System.out.println("3");
         return chain.filter(exchange);
     }
 
     @Override
     public int getOrder() {
-        return 0;
+        return 3;
     }
 }
