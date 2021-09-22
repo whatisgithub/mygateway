@@ -27,6 +27,19 @@ spring:
 #基于断言或者说表达式Path匹配注意访问的时候会把/gateway给带给http://httpbin.org/，所以需要有filter把前缀给弄掉
             - Path=/gateway/**
           filters:
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 #            去掉一级前缀就是把gateway给干掉然后丢给后端
             - StripPrefix=1
 #        - id: httpbin2
@@ -56,3 +69,5 @@ server:
 #ServiceName:
 #  ribbon:
 #    NFLLoadBalancerRuleClassName: com.test.myRule
+
+
