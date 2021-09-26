@@ -1,5 +1,7 @@
 package com.gateway.mygateway.flux;
 
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -73,5 +75,41 @@ public class PersonController {
             System.out.println("onnext=" + data);
         });
         return flux;
+    }
+
+    public static void main(String[] args) {
+        Flux.fromStream(IntStream.range(1, 10).mapToObj(i -> i+"")).log().subscribe(ele -> {
+            System.out.println(ele);
+        });
+
+        System.out.println("====================");
+
+
+        Flux.just("test1", "test2", "test3").log().subscribe(new Subscriber<String>() {
+            @Override
+            public void onSubscribe(Subscription subscription) {
+                System.out.println("啥时候调用我---onSubscribe");
+                subscription.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(String s) {
+                System.out.println("啥时候调用我---onNext=" + s);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("啥时候调用我---onError");
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("啥时候调用我---onComplete");
+            }
+        });
+
+
+        System.out.println("==============");
+        Flux.just("f1", "f2", "f3").log().doOnNext(e -> System.out.println(e)).subscribe();
     }
 }
